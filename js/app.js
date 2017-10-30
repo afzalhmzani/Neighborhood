@@ -14,7 +14,7 @@ function initMap() {
             lng: 46.6753
         }
         // center:{lat: -25.363, lng: 131.044}
-    }
+    };
 
     var map = new google.maps.Map(document.getElementById('map'), options);
     //24.712461, 46.673398
