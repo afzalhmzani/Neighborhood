@@ -32,7 +32,8 @@ function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), options);
     var infoWindo = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
-    ko.applyBindings(new AppViewModel()); 
+    ko.applyBindings(new AppViewModel());
+     
 
     for(var i = 0; i< mallsInRiyadh.length ; i++){
         var positionOnMap = mallsInRiyadh[i].location; 
@@ -74,7 +75,9 @@ function showInfoWindow(marker, infoWindow){
 function AppViewModel(){
     
    
-    var self = this; 
+    var self = this;
+    self.query = ko.observable("");
+
     self.places = ko.observableArray([
         {title: mallsInRiyadh[0].title},
         {title: mallsInRiyadh[1].title},
@@ -83,12 +86,32 @@ function AppViewModel(){
         {title: mallsInRiyadh[4].title}
     ]); 
 
-    self.placeInfo = function(title){
-        google.map.evet.trigger(self.marker, 'click')
-    };
+    self.query = ko.computed(function(){
+        var search = self.query.toLowerCase; 
+        return ko.utils.arrayFilter(mallsInRiyadh, function(mall){
+            return mall.title.indexOf(search) >= 0; 
+        }); 
+    }, self);
+
+    
+    // self.places = ko.computed(function(){
+    //     fText = self.filter().replace(/\s+/g,' ');
+
+    //     var filteredMenu = ko.utils.arrayFilter(self.places(), function(test){
+    //         if(fText.length)
+    //             return (test.name.indexOf(fText) >= 0); 
+    //         else
+    //             return 1; 
+    //     });
+
+    //     return filteredMenu; 
+    // }, self);
+    // self.placeInfo = function(title){
+    //     google.map.evet.trigger(self.marker, 'click')
+    // };
 
     console.log("----------------"); 
-    console.log(self.placeInfo); 
+    console.log(self.query); 
 }
 
 // ko.applyBindings(new AppViewModel());
