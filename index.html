@@ -23,13 +23,25 @@
 
               <!-- normal collapsable navbar markup -->
               <div class="navbar-header">
-                <a class="navbar-brand" href="./">Places</a>              
+                <a class="navbar-brand" href="./">Places</a>
+                    <!-- <input data-bind="value: search"/>             -->
               </div>
               <div class="collapse navbar-collapse" >
+                <h2>My Fav Places</h2>
+                <!-- <select id="favselector" data-bind="options:bestPlaces, value:selectAll">
+                </select> -->
+
+                <!-- convert it to search -->
+                <!-- <input id="show-listings" type="button" value="Show Listings">
+                <input id="hide-listings" type="button" value="Hide Listings"> -->
+
+                <!-- <input placeholder="Search…" type="search" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off"> -->
+                <input placeholder="Search…" type="search"  autocomplete="off">
                   <ul class="nav navbar-nav" data-bind="foreach: places">
                     <!-- <li><a href="#"> Hail<a></li>
                     <li><a href="#"> Riyadh<a></li> -->
-                    <li><a data-bind="text: name"></a></li>
+                      <!-- click:placeInfo -->
+                    <li><a data-bind="text: title "></a></li> 
                   </ul>
               </div>
 

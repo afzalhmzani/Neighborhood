@@ -1,0 +1,78 @@
+ //24.712461, 46.673398
+    // var riyadh = new google.maps.Marker({
+    //     position: {
+    //         lat: 24.7680,lng:46.7146
+    //     },
+    //     map: map
+    // });
+    // var panoramaMall = new google.maps.Marker({
+    //     position: {
+    //         lat: 24.6928311,lng:46.6677251
+    //     },
+    //     map: map
+    // });
+    // var hail = new google.maps.Marker({
+    //     position: {
+    //         lat: myFavLocation[0].lat,
+    //         lng: myFavLocation[0].lng
+    //     },
+    //     map: map
+    // });
+
+    // var waukesha = new google.maps.Marker({
+    //     position: {
+    //         lat: myFavLocation[1].lat,
+    //         lng: myFavLocation[1].lng
+    //     },
+    //     map: map
+    // });
+
+    // var arlington = new google.maps.Marker({
+    //     position: {
+    //         lat: myFavLocation[2].lat,
+    //         lng: myFavLocation[2].lng
+    //     },
+    //     map: map
+    // });
+
+    //look at the windo shoppinng part 1 on getting stated with the API
+    //My Commute - Distance Matrix API Part 2
+    //Add Devil in the Details - Places Details
+    // var infowindow = new google.maps.InfoWindow({
+    //     content: "hello"
+    // });
+    // riyadh.addListener('click', function(){
+    //     infowindow.open(map, riyadh); 
+    // });
+
+
+
+
+    // var myFavLocation = [
+   
+//         {
+//             name:"Hail",
+//             lat: 27.5114,
+//             lng: 41.7208
+//         },
+    
+//          {
+//             name:"Waukesha",
+//             lat: 43.0117,
+//             lng: -88.2315
+//         },
+    
+//         {
+//             name:"Arlington",
+//             lat: 32.700708,
+//             lng: -97.124691
+//         }
+    
+// ]; 
+
+
+
+// this.placeList = ko.observableArray([]);
+    // myFavLocation.forEach(function(placeItem){
+    //     self.placeList.push(new Place(placeItem));
+    // });
