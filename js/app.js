@@ -35,7 +35,7 @@ function initMap() {
     var infoWindo = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
 
-    appViewModel = new AppViewModel()
+    appViewModel = new AppViewModel();
     ko.applyBindings(appViewModel);
      
 
@@ -60,7 +60,7 @@ function initMap() {
             //showInfoWindow(this, infoWindo);
 
             // do this:
-            getDataFromFoursquare(this, infoWindo)
+            getDataFromFoursquare(this, infoWindo);
         });
 
         bounds.extend(markers[i].position); // might deleteted 
@@ -104,8 +104,8 @@ function AppViewModel(){
             // https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
             var mallFound = mall.title.toLowerCase().indexOf(search) >= 0; // true or false (everything greater than -1 one is true)
 
-            console.log(mall.title, search, mallFound)
-            if (mall.hasOwnProperty('marker')) mall.marker.setVisible(mallFound)
+            console.log(mall.title, search, mallFound);
+            if (mall.hasOwnProperty('marker')) mall.marker.setVisible(mallFound);
             //if (mall.marker) mall.marker.setVisible(mallFound)
             return mallFound; 
         }); 
@@ -115,7 +115,7 @@ function AppViewModel(){
     // this.activateTheClickedListViewItemsMapMarker = function(mall) {
     this.TheClickedMarker = function(mall) {
         //console.log("click")
-        console.log(mall)
+        console.log(mall);
 
         for(var i = 0; i < appViewModel.places().length; ++i){
             appViewModel.places()[i].marker.setVisible(true);
@@ -124,7 +124,7 @@ function AppViewModel(){
 
         google.maps.event.trigger(mall.marker, 'click');
         
-        for(var i = 0; i < appViewModel.places().length; ++i){
+        for( i = 0; i < appViewModel.places().length; ++i){
           if(appViewModel.places()[i].marker.position !== mall.marker.position)
           appViewModel.places()[i].marker.setVisible(false);
         }
@@ -144,7 +144,7 @@ function AppViewModel(){
 
 function getDataFromFoursquare(marker, infoWindow) {
 
-    console.log('getDataFromFoursquare function invoked!')
+    console.log('getDataFromFoursquare function invoked!');
  
     var query = marker.title,
     dt = 'jsonp',
@@ -165,13 +165,13 @@ function getDataFromFoursquare(marker, infoWindow) {
         url: wikiUrl,
         dataType: dt,
         success: function(response) {
-          console.log("Response: " + response)
+          console.log("Response: " + response);
             
           // set the info window content
           // infoWindow.setContent('<p>' + response[2][0] + '</p>')
           // open the info window
           infoWindow.wiki = response;
-          showInfoWindow(marker, infoWindow)
+          showInfoWindow(marker, infoWindow);
           clearTimeout(wikiRequestTimeout);
         }
       });
