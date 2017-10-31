@@ -54,14 +54,14 @@ function initMap() {
         appViewModel.places()[i].marker = marker;
 
         markers.push(marker); 
-        marker.addListener('click', function(){
+        // marker.addListener('click', function(){
 
-            // Instead of:
-            //showInfoWindow(this, infoWindo);
+        //     // Instead of:
+        //     //showInfoWindow(this, infoWindo);
 
-            // do this:
-            getDataFromFoursquare(this, infoWindo);
-        });
+        //     // do this:
+        //     getDataFromFoursquare(this, infoWindo);
+        // });
 
         bounds.extend(markers[i].position); // might deleteted 
     }
