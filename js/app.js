@@ -86,29 +86,14 @@ function AppViewModel(){
         {title: mallsInRiyadh[4].title}
     ]); 
 
-    self.query = ko.computed(function(){
-        var search = self.query.toLowerCase; 
+    self.places = ko.computed(function(){
+        var search = self.query().toLowerCase(); 
         return ko.utils.arrayFilter(mallsInRiyadh, function(mall){
-            return mall.title.indexOf(search) >= 0; 
+            return mall.title.toLowerCase().indexOf(search) >= 0; 
         }); 
     }, self);
 
-    
-    // self.places = ko.computed(function(){
-    //     fText = self.filter().replace(/\s+/g,' ');
-
-    //     var filteredMenu = ko.utils.arrayFilter(self.places(), function(test){
-    //         if(fText.length)
-    //             return (test.name.indexOf(fText) >= 0); 
-    //         else
-    //             return 1; 
-    //     });
-
-    //     return filteredMenu; 
-    // }, self);
-    // self.placeInfo = function(title){
-    //     google.map.evet.trigger(self.marker, 'click')
-    // };
+   
 
     console.log("----------------"); 
     console.log(self.query); 
