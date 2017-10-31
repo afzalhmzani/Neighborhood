@@ -19,6 +19,8 @@ var mallsInRiyadh = [
         
         ];
 
+var appViewModel;
+
 
 
 function initMap() {
@@ -32,7 +34,9 @@ function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), options);
     var infoWindo = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
-    ko.applyBindings(new AppViewModel());
+
+    appViewModel = new AppViewModel()
+    ko.applyBindings(appViewModel);
      
 
     for(var i = 0; i< mallsInRiyadh.length ; i++){
@@ -47,9 +51,16 @@ function initMap() {
             id: i // No need 
         });
 
+        appViewModel.places()[i].marker = marker;
+
         markers.push(marker); 
         marker.addListener('click', function(){
-            showInfoWindow(this, infoWindo); 
+
+            // Instead of:
+            //showInfoWindow(this, infoWindo);
+
+            // do this:
+            getDataFromFoursquare(this, infoWindo)
         });
 
         bounds.extend(markers[i].position); // might deleteted 
@@ -60,7 +71,8 @@ function initMap() {
 function showInfoWindow(marker, infoWindow){
     if(infoWindow.marker != marker){
         infoWindow.marker = marker; 
-        infoWindow.setContent('<div>' + marker.title + '</div>'); 
+        //infoWindow.setContent('<div>' + marker.title + '</div>'); 
+        infoWindow.setContent('<div>' + infoWindow.wiki + '</div>'); 
         infoWindow.open(map,marker); 
 
         infoWindow.addListener('closeclick', function(){
@@ -89,14 +101,82 @@ function AppViewModel(){
     self.places = ko.computed(function(){
         var search = self.query().toLowerCase(); 
         return ko.utils.arrayFilter(mallsInRiyadh, function(mall){
-            return mall.title.toLowerCase().indexOf(search) >= 0; 
-        }); 
-    }, self);
+            // https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
+            var mallFound = mall.title.toLowerCase().indexOf(search) >= 0; // true or false (everything greater than -1 one is true)
 
+            console.log(mall.title, search, mallFound)
+            if (mall.hasOwnProperty('marker')) mall.marker.setVisible(mallFound)
+            //if (mall.marker) mall.marker.setVisible(mallFound)
+            return mallFound; 
+        }); 
+    });
+
+    // http://knockoutjs.com/documentation/click-binding.html#note-1-passing-a-current-item-as-a-parameter-to-your-handler-function
+    // this.activateTheClickedListViewItemsMapMarker = function(mall) {
+    this.TheClickedMarker = function(mall) {
+        //console.log("click")
+        console.log(mall)
+
+        for(var i = 0; i < appViewModel.places().length; ++i){
+            appViewModel.places()[i].marker.setVisible(true);
+          }
+
+
+        google.maps.event.trigger(mall.marker, 'click');
+        
+        for(var i = 0; i < appViewModel.places().length; ++i){
+          if(appViewModel.places()[i].marker.position !== mall.marker.position)
+          appViewModel.places()[i].marker.setVisible(false);
+        }
+
+        
+        //console.log(mall.marker.position);
+
+        // use mall.marker to activate the selected list item's marker object (bounce + open info window)
+        // you could, for example, use the google.maps.event.trigger() method to trigger a 'click' event on mall.marker
+
+    };
    
 
-    console.log("----------------"); 
-    console.log(self.query); 
+   // console.log("----------------"); 
+   // console.log(self.query()); 
 }
 
+function getDataFromFoursquare(marker, infoWindow) {
+
+    console.log('getDataFromFoursquare function invoked!')
+ 
+    var query = marker.title,
+    dt = 'jsonp',
+    wikiBase = 'https://en.wikipedia.org/w/api.php',
+    wikiUrl = wikiBase + '?action=opensearch&search=' + query + '&format=json&callback=wikiCallback';
+
+    var wikiRequestTimeout = setTimeout(function() {
+        $wikiElem.text('failed to get Wikipedia resources');
+      }, 8000);
+
+
+    // do ajax request here
+    // for example, use marker.title for the request
+    // set the info window content and
+    // open the info window in the success callback (or done method)
+
+      $.ajax({
+        url: wikiUrl,
+        dataType: dt,
+        success: function(response) {
+          console.log("Response: " + response)
+            
+          // set the info window content
+          // infoWindow.setContent('<p>' + response[2][0] + '</p>')
+          // open the info window
+          infoWindow.wiki = response;
+          showInfoWindow(marker, infoWindow)
+          clearTimeout(wikiRequestTimeout);
+        }
+      });
+  
+}
+
+// var temp;
 // ko.applyBindings(new AppViewModel());

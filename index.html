@@ -23,11 +23,11 @@
 
               <!-- normal collapsable navbar markup -->
               <div class="navbar-header">
-                <a class="navbar-brand" href="./">Places</a>
+                <a class="navbar-brand" href="./">Mall</a>
                     <!-- <input data-bind="value: search"/>             -->
               </div>
               <div class="collapse navbar-collapse" >
-                <h2>My Fav Places</h2>
+                <h2>My Fav Mall</h2>
                 <!-- <select id="favselector" data-bind="options:bestPlaces, value:selectAll">
                 </select> -->
 
@@ -42,7 +42,8 @@
                     <!-- <li><a href="#"> Hail<a></li>
                     <li><a href="#"> Riyadh<a></li> -->
                       <!-- click:placeInfo -->
-                    <li><a data-bind="text: title "></a></li> 
+                      <!-- $root.activateTheClickedListViewItemsMapMarker -->
+                    <li><a data-bind="text: title, click: $root.TheClickedMarker"></a></li> 
                   </ul>
               </div>
 
@@ -50,7 +51,7 @@
           </div>
           <div class="col-sm-9 col-lg-10 col-sm-pull-3 col-lg-pull-2">
             <!-- your page content -->
-            <h1>My Favorite Places </h1>
+            <h1>My Favorite Mall </h1>
             <!-- <p>First name: <strong data-bind="value: firstName" ></strong></p>
             <p>Last name: <input data-bind="value: lastName" /></p> -->
             <div id="map"></div>
