@@ -76,9 +76,10 @@ function initMap() {
 
         appViewModel.places()[i].marker = marker;
         markers.push(marker); 
-        marker.addListener('click', function(){
-            getDataFromWiki(this, infoWindow);
-        });
+        
+        // marker.addListener('click', function(){
+        //     getDataFromWiki(this, infoWindow);
+        // });
         bounds.extend(markers[i].position); 
     }
     map.fitBounds(bounds);
