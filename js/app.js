@@ -7,7 +7,7 @@
 // }
 var map;
 var markers =[];
-
+// var marker;
 
 var mallsInRiyadh = [
         
@@ -37,6 +37,31 @@ function initMap() {
     appViewModel = new AppViewModel();
     ko.applyBindings(appViewModel);
      
+    
+    // mallsInRiyadh.forEach(function(coor){
+    //     var positionOnMap = coor.location; 
+    //     var title = coor.title; 
+    //     var marker = new google.maps.Marker({
+    //         map: map, 
+    //         position : positionOnMap,
+    //         title: title,
+    //         animation: google.maps.Animation.DROP,
+    //         id: coor // No need 
+    //     });
+    //     console.log('index of '+ coor); 
+    //     // appViewModel.places()[coor].marker = marker;
+    //     setAllMarkersVis();
+
+    //     markers.push(marker); 
+    //     marker.addListener('click', function(){
+    //         getDataFromWiki(this, infoWindow); 
+    //     });
+    //     console.log('markres ===========' + markers.length); 
+    //     bounds.extend(markers[0].position); 
+    // });
+
+
+    // PLEASE UNCOMMENT marker.addListener() 
     for(var i = 0; i< mallsInRiyadh.length ; i++){
         var positionOnMap = mallsInRiyadh[i].location; 
         var title = mallsInRiyadh[i].title; 
@@ -51,15 +76,19 @@ function initMap() {
 
         appViewModel.places()[i].marker = marker;
         markers.push(marker); 
-        marker.addListener('click', function(){
-            getDataFromWiki(this, infoWindow);
-        });
-        // marker.addListener('click', getDataFromWiki(this, infoWindow));
+        // marker.addListener('click', function(){
+        //     getDataFromWiki(this, infoWindow);
+        // });
+        
         bounds.extend(markers[i].position); 
     }
     map.fitBounds(bounds);
 }
-
+// var setAllMarkersVis = function(){
+//     markers.forEach(function(aMarker){
+//         aMarker.setVisible(true);
+//     });
+// };
 function showInfoWindow(marker, infoWindow){
     if(infoWindow.marker != marker){
         infoWindow.marker = marker; 
@@ -96,6 +125,7 @@ function AppViewModel(){
             // https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
             var mallFound = mall.title.toLowerCase().indexOf(search) >= 0; // true or false (everything greater than -1 one is true)
 
+            
            // console.log(mall.title, search, mallFound);
             if (mall.hasOwnProperty('marker')) mall.marker.setVisible(mallFound);
             //if (mall.marker) mall.marker.setVisible(mallFound)
@@ -107,19 +137,25 @@ function AppViewModel(){
     // this.activateTheClickedListViewItemsMapMarker = function(mall) {
     this.TheClickedMarker = function(mall) {
         //console.log("click")
-        console.log(mall);
-
+       
+        //setAllMarkersVis(); 
         for(var i = 0; i < appViewModel.places().length; ++i){
             appViewModel.places()[i].marker.setVisible(true);
           }
 
+
         google.maps.event.trigger(mall.marker, 'click');
         
-        for( i = 0; i < appViewModel.places().length; ++i){
-          if(appViewModel.places()[i].marker.position !== mall.marker.position)
-          appViewModel.places()[i].marker.setVisible(false);
-        }
+        // for( i = 0; i < markers.length; ++i){
+        //     console.log('mall --------------------------' + mall.marker); 
+        //   if(markers[i].position !== mall.marker.position)
+        //     markers[i].setVisible(false);
+        // }
 
+        for( i = 0; i < appViewModel.places().length; ++i){
+            if(appViewModel.places()[i].marker.position !== mall.marker.position)
+            appViewModel.places()[i].marker.setVisible(false);
+          }
         //console.log(mall.marker.position);
 
         // use mall.marker to activate the selected list item's marker object (bounce + open info window)
@@ -133,7 +169,8 @@ function AppViewModel(){
 }
 var loadingMapError = function (){
     alert('Sorry!!!, Cannot load the map'); 
-}
+};
+
 function getDataFromWiki(marker, infoWindow) {
 
     //console.log('getDataFromFoursquare function invoked!');
