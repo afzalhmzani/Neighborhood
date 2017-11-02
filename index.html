@@ -20,40 +20,27 @@
         <div class="row">
           <div class="col-sm-3 col-lg-2 col-sm-push-9 col-lg-push-10">
             <nav class="navbar navbar-default navbar-fixed-side">
-
               <!-- normal collapsable navbar markup -->
               <div class="navbar-header">
+                  <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
                 <a class="navbar-brand" href="./">Mall</a>
                     <!-- <input data-bind="value: search"/>             -->
               </div>
               <div class="collapse navbar-collapse" >
                 <h2>My Fav Mall</h2>
-                <!-- <select id="favselector" data-bind="options:bestPlaces, value:selectAll">
-                </select> -->
-
-                <!-- convert it to search -->
-                <!-- <input id="show-listings" type="button" value="Show Listings">
-                <input id="hide-listings" type="button" value="Hide Listings"> -->
-
                 <input placeholder="Search…" type="search" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
-                <!-- <input placeholder="Search…" type="search"  autocomplete="off"> -->
-                <!-- <input placeholder="Search…" data-bind="value: filter, valueUpdate: 'keyup'"> -->
                   <ul class="nav navbar-nav" data-bind="foreach: places">
-                    <!-- <li><a href="#"> Hail<a></li>
-                    <li><a href="#"> Riyadh<a></li> -->
-                      <!-- click:placeInfo -->
-                      <!-- $root.activateTheClickedListViewItemsMapMarker -->
                     <li><a data-bind="text: title, click: $root.TheClickedMarker"></a></li> 
                   </ul>
               </div>
-
             </nav>
           </div>
-          <div class="col-sm-9 col-lg-10 col-sm-pull-3 col-lg-pull-2">
-            <!-- your page content -->
-            <h1>My Favorite Mall </h1>
-            <!-- <p>First name: <strong data-bind="value: firstName" ></strong></p>
-            <p>Last name: <input data-bind="value: lastName" /></p> -->
+          <div class="col-sm-9 col-lg-10 col-sm-pull-3 col-lg-pull-2 map-area">
             <div id="map"></div>
           </div>
         </div>
@@ -61,21 +48,11 @@
 
 
 
+    
     <script src="js/jQuery.js"></script>
+    <script src="js/application.js"></script>
     <script src="js/knockout.js"></script>
-    <script src="js/app.js"></script>
-    
-    <!-- <script>
-        function initMap(){
-            var options = {
-                zoom:2,
-                center:{lat: -25.363, lng: 131.044}
-            }
-
-            var map = new google.maps.Map(document.getElementById('map'),options); 
-        }
-    </script> -->
-    
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtHTm2nXUC5BZoaomkwLo9wf115Hg9xcQ&callback=initMap"></script>
+    <script src="js/app.js"></script> 
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtHTm2nXUC5BZoaomkwLo9wf115Hg9xcQ&callback=initMap" onerror="loadingMapError()"></script>
 </body>
 </html>

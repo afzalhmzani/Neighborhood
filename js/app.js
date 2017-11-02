@@ -22,23 +22,21 @@ var mallsInRiyadh = [
 var appViewModel;
 
 
-
 function initMap() {
     var options = {
-        zoom: 12,
+        zoom: 14,
         center: {
             lat: 24.7680,lng:46.7146
         }
         // center:{lat: -25.363, lng: 131.044}
     };
     var map = new google.maps.Map(document.getElementById('map'), options);
-    var infoWindo = new google.maps.InfoWindow();
+    var infoWindow = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
 
     appViewModel = new AppViewModel();
     ko.applyBindings(appViewModel);
      
-
     for(var i = 0; i< mallsInRiyadh.length ; i++){
         var positionOnMap = mallsInRiyadh[i].location; 
         var title = mallsInRiyadh[i].title; 
@@ -52,20 +50,14 @@ function initMap() {
         });
 
         appViewModel.places()[i].marker = marker;
-
         markers.push(marker); 
-        // marker.addListener('click', function(){
-
-        //     // Instead of:
-        //     //showInfoWindow(this, infoWindo);
-
-        //     // do this:
-        //     getDataFromFoursquare(this, infoWindo);
-        // });
-
-        bounds.extend(markers[i].position); // might deleteted 
+        marker.addListener('click', function(){
+            getDataFromWiki(this, infoWindow);
+        });
+        // marker.addListener('click', getDataFromWiki(this, infoWindow));
+        bounds.extend(markers[i].position); 
     }
-    map.fitBounds(bounds); //might deleted
+    map.fitBounds(bounds);
 }
 
 function showInfoWindow(marker, infoWindow){
@@ -104,7 +96,7 @@ function AppViewModel(){
             // https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
             var mallFound = mall.title.toLowerCase().indexOf(search) >= 0; // true or false (everything greater than -1 one is true)
 
-            console.log(mall.title, search, mallFound);
+           // console.log(mall.title, search, mallFound);
             if (mall.hasOwnProperty('marker')) mall.marker.setVisible(mallFound);
             //if (mall.marker) mall.marker.setVisible(mallFound)
             return mallFound; 
@@ -121,7 +113,6 @@ function AppViewModel(){
             appViewModel.places()[i].marker.setVisible(true);
           }
 
-
         google.maps.event.trigger(mall.marker, 'click');
         
         for( i = 0; i < appViewModel.places().length; ++i){
@@ -129,7 +120,6 @@ function AppViewModel(){
           appViewModel.places()[i].marker.setVisible(false);
         }
 
-        
         //console.log(mall.marker.position);
 
         // use mall.marker to activate the selected list item's marker object (bounce + open info window)
@@ -141,40 +131,59 @@ function AppViewModel(){
    // console.log("----------------"); 
    // console.log(self.query()); 
 }
+var loadingMapError = function (){
+    alert('Sorry!!!, Cannot load the map'); 
+}
+function getDataFromWiki(marker, infoWindow) {
 
-function getDataFromFoursquare(marker, infoWindow) {
-
-    console.log('getDataFromFoursquare function invoked!');
+    //console.log('getDataFromFoursquare function invoked!');
  
     var query = marker.title,
     dt = 'jsonp',
     wikiBase = 'https://en.wikipedia.org/w/api.php',
     wikiUrl = wikiBase + '?action=opensearch&search=' + query + '&format=json&callback=wikiCallback';
 
-    var wikiRequestTimeout = setTimeout(function() {
-        $wikiElem.text('failed to get Wikipedia resources');
-      }, 8000);
 
+    // var wikiRequestTimeout = setTimeout(function() {
+    //     $wikiElem.text('failed to get Wikipedia resources');
+    //   }, 8000);
 
     // do ajax request here
     // for example, use marker.title for the request
     // set the info window content and
     // open the info window in the success callback (or done method)
 
+    //'https://en.wikipedia.org/w/api.php' + '?action=opensearch&search=' + query + '&format=json&callback=wikiCallback'
+    //'jsonp'
       $.ajax({
         url: wikiUrl,
         dataType: dt,
         success: function(response) {
-          console.log("Response: " + response);
-            
-          // set the info window content
-          // infoWindow.setContent('<p>' + response[2][0] + '</p>')
-          // open the info window
           infoWindow.wiki = response;
           showInfoWindow(marker, infoWindow);
-          clearTimeout(wikiRequestTimeout);
+        //   clearTimeout(wikiRequestTimeout);
+        },
+        error: function(err){
+            console.log('Error happining '+ err); 
+            
         }
       });
+
+      //my old ajax call
+    //   $.ajax({
+    //     url: wikiUrl,
+    //     dataType: dt,
+    //     success: function(response) {
+    //      // console.log("Response: " + response);
+            
+    //       // set the info window content
+    //       // infoWindow.setContent('<p>' + response[2][0] + '</p>')
+    //       // open the info window
+    //       infoWindow.wiki = response;
+    //       showInfoWindow(marker, infoWindow);
+    //       clearTimeout(wikiRequestTimeout);
+    //     }
+    //   });
   
 }
 
