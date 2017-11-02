@@ -76,10 +76,9 @@ function initMap() {
 
         appViewModel.places()[i].marker = marker;
         markers.push(marker); 
-        // marker.addListener('click', function(){
-        //     getDataFromWiki(this, infoWindow);
-        // });
-        
+        marker.addListener('click', function(){
+            getDataFromWiki(this, infoWindow);
+        });
         bounds.extend(markers[i].position); 
     }
     map.fitBounds(bounds);
@@ -192,17 +191,29 @@ function getDataFromWiki(marker, infoWindow) {
 
     //'https://en.wikipedia.org/w/api.php' + '?action=opensearch&search=' + query + '&format=json&callback=wikiCallback'
     //'jsonp'
+
       $.ajax({
         url: wikiUrl,
         dataType: dt,
         success: function(response) {
-          infoWindow.wiki = response;
+
+            // console.log('00000000000   ' + (String(response)).split(' ,'));
+            // console.log('00000000000 type of   ' + typeof( (String(response))));
+            // //var wikiArr = response.toString();
+
+            var wikiInfo = (String(response)).split(','); 
+            var name = wikiInfo[0]; 
+            // console.log('resopnse --------- '+ name); 
+          infoWindow.wiki = name;
+
           showInfoWindow(marker, infoWindow);
         //   clearTimeout(wikiRequestTimeout);
         },
         error: function(err){
-            console.log('Error happining '+ err); 
-            
+            console.log('Error happining '+ err);
+            // showInfoWindow() 
+            // infoWindow.setContent('<div>' + infoWindow.wiki + '</div>');
+            alert('Sorry No info ' + err);  
         }
       });
 
