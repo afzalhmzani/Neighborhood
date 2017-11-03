@@ -2,41 +2,41 @@ var map;
 var markers = [];
 // var marker;
 
-var mallsInRiyadh = [
+var restaurantsInRiyadh = [
 
     {
-        title: 'Al Nakheel Mall',
+        title: 'Steak House',
         location: {
-            lat: 24.7680,
-            lng: 46.7146
+            lat: 24.6937419,
+            lng: 46.6954994
         }
     },
     {
-        title: 'Panorama Mall',
+        title: 'McDonalds',
         location: {
-            lat: 24.6928311,
-            lng: 46.6677251
+            lat: 24.710044,
+            lng: 46.6742543
         }
     },
     {
-        title: 'Centria Mall',
+        title: 'Five Guys',
         location: {
-            lat: 24.697506,
-            lng: 46.6817792
+            lat: 24.7135517,
+            lng: 46.673107
         }
     },
     {
-        title: 'Granada Center',
+        title: 'Applebees',
         location: {
-            lat: 24.7816366,
-            lng: 46.7283682
+            lat: 24.6886888,
+            lng: 46.6717253
         }
     },
     {
-        title: 'Hayat Mall',
+        title: 'KFC',
         location: {
-            lat: 24.7432627,
-            lng: 46.6783695
+            lat: 24.6928254,
+            lng: 46.6829246
         }
     },
 
@@ -60,9 +60,9 @@ function initMap() {
     var bounds = new google.maps.LatLngBounds();
 
     // PLEASE UNCOMMENT marker.addListener() 
-    for (var i = 0; i < mallsInRiyadh.length; i++) {
-        var positionOnMap = mallsInRiyadh[i].location;
-        var title = mallsInRiyadh[i].title;
+    for (var i = 0; i < restaurantsInRiyadh.length; i++) {
+        var positionOnMap = restaurantsInRiyadh[i].location;
+        var title = restaurantsInRiyadh[i].title;
 
         var marker = new google.maps.Marker({
             map: map,
@@ -114,47 +114,47 @@ function AppViewModel() {
     self.query = ko.observable("");
 
     self.places = ko.observableArray([{
-            title: mallsInRiyadh[0].title
+            title: restaurantsInRiyadh[0].title
         },
         {
-            title: mallsInRiyadh[1].title
+            title: restaurantsInRiyadh[1].title
         },
         {
-            title: mallsInRiyadh[2].title
+            title: restaurantsInRiyadh[2].title
         },
         {
-            title: mallsInRiyadh[3].title
+            title: restaurantsInRiyadh[3].title
         },
         {
-            title: mallsInRiyadh[4].title
+            title: restaurantsInRiyadh[4].title
         }
     ]);
 
     self.places = ko.computed(function () {
         var search = self.query().toLowerCase();
-        return ko.utils.arrayFilter(mallsInRiyadh, function (mall) {
+        return ko.utils.arrayFilter(restaurantsInRiyadh, function (restaurant) {
             // https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
-            var mallFound = mall.title.toLowerCase().indexOf(search) >= 0; // true or false (everything greater than -1 one is true)
+            var restaurantFound = restaurant.title.toLowerCase().indexOf(search) >= 0; // true or false (everything greater than -1 one is true)
 
 
-            // console.log(mall.title, search, mallFound);
-            if (mall.hasOwnProperty('marker')) mall.marker.setVisible(mallFound);
-            //if (mall.marker) mall.marker.setVisible(mallFound)
-            return mallFound;
+            // console.log(restaurant.title, search, restaurantFound);
+            if (restaurant.hasOwnProperty('marker')) restaurant.marker.setVisible(restaurantFound);
+            //if (restaurant.marker) restaurant.marker.setVisible(restaurantFound)
+            return restaurantFound;
         });
     });
 
     // http://knockoutjs.com/documentation/click-binding.html#note-1-passing-a-current-item-as-a-parameter-to-your-handler-function
-    this.TheClickedMarker = function (mall) {
+    this.TheClickedMarker = function (restaurant) {
         //setAllMarkersVis(); 
         for (var i = 0; i < appViewModel.places().length; ++i) {
             appViewModel.places()[i].marker.setVisible(true);
         }
 
-        google.maps.event.trigger(mall.marker, 'click');
+        google.maps.event.trigger(restaurant.marker, 'click');
 
         for (i = 0; i < appViewModel.places().length; ++i) {
-            if (appViewModel.places()[i].marker.position !== mall.marker.position)
+            if (appViewModel.places()[i].marker.position !== restaurant.marker.position)
                 appViewModel.places()[i].marker.setVisible(false);
         }
     };
@@ -170,6 +170,8 @@ function getDataFromWiki(marker, infoWindow) {
         dt = 'jsonp',
         wikiBase = 'https://en.wikipedia.org/w/api.php',
         wikiUrl = wikiBase + '?action=opensearch&search=' + query + '&format=json&callback=wikiCallback';
+    var linkInfoHTML = "<ul>info</ul>"; 
+
 
 
     // var wikiRequestTimeout = setTimeout(function() {
@@ -191,9 +193,25 @@ function getDataFromWiki(marker, infoWindow) {
             var wikiInfo = (String(response)).split(',');
             var name = wikiInfo[0];
             // console.log('resopnse --------- '+ name); 
-            infoWindow.wiki = name;
+            infoWindow.wiki = name; 
+            var linkInfo = response[1]; 
+            if (linkInfo.length === 0 && infoWindow.length === 0 ){
+                infoWindow = 'No Info'; 
+                showInfoWindow(marker, infoWindow); 
+            } else {
+                var listEl = ''; 
+                for (var i = 0; i < linkInfo.length; i++){
+                    var url = "http://en.Wikipedia.org/wiki/ " + linkInfo[i];
+                    var domHTML = '<li><a href="'+url+'">' + linkInfo[i] + '</a><li>'; 
+                    listEl = listEl.concat(domHTML); 
+                    if (i === 2); break; 
+                }
+                linkInfoHTML = linkInfoHTML.replace('info', listEl); 
+                showInfoWindow(marker, infoWindow);
+            }
+            
 
-            showInfoWindow(marker, infoWindow);
+           
             //   clearTimeout(wikiRequestTimeout);
         },
         error: function (err) {
