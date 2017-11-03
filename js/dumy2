@@ -45,7 +45,6 @@ var restaurantsInRiyadh = [
 var appViewModel;
 appViewModel = new AppViewModel();
 ko.applyBindings(appViewModel);
-var infoWindow;
 
 function initMap() {
     var options = {
@@ -57,10 +56,8 @@ function initMap() {
 
     };
     var map = new google.maps.Map(document.getElementById('map'), options);
-    //    var infoWindow = new google.maps.InfoWindow();
-    infoWindow = new google.maps.InfoWindow({
-
-    });
+//    var infoWindow = new google.maps.InfoWindow();
+    var infoWindow = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
 
     // PLEASE UNCOMMENT marker.addListener() 
@@ -84,17 +81,6 @@ function initMap() {
         bounds.extend(markers[i].position);
     }
 
-    // function myCallback() {
-    //     if (this.getAnimation() !== null) {
-    //         this.setAnimation(null);
-    //     } else {
-    //         this.setAnimation(google.maps.Animation.BOUNCE);
-    //         setTimeout(function () {
-    //             marker.setAnimation(null);
-    //         }, 200);
-    //         getDataFromWiki(this, infoWindow);
-    //     }
-    // }
     function myCallback() {
         if (this.getAnimation() !== null) {
             this.setAnimation(null);
@@ -109,14 +95,14 @@ function initMap() {
     map.fitBounds(bounds);
 }
 
-function showInfoWindow(marker, infoWindo) {
-    if (infoWindo.marker != marker) {
-        infoWindo.marker = marker;
-        //infoWindow.setContent('<div>' + infoWindow.wiki + '</div>');
-        infoWindow.setContent(infoWindo.restInfo());
+function showInfoWindow(marker, infoWindow) {
+    if (infoWindow.marker != marker) {
+        infoWindow.marker = marker;
+       infoWindow.setContent('<div>' + infoWindow.wiki + '</div>');
+       // infoWindow.setContent(infoWindow.restInfo() );
         infoWindow.open(map, marker);
         infoWindow.addListener('closeclick', function () {
-            infoWindo.setMarker = null;
+            infoWindow.setMarker = null;
         });
     }
 }
@@ -181,15 +167,15 @@ var loadingMapError = function () {
 };
 
 function getDataFromWiki(marker, myFavPlace) {
-    //    function getDataFromWiki(marker, infoWindow) {
-    var restaurantInfoWindo = this;
-    restaurantInfoWindo.title = ko.observable(marker.title);
-    restaurantInfoWindo.lat = ko.observable(marker.lat);
-    restaurantInfoWindo.lng = ko.observable(marker.lng);
-    restaurantInfoWindo.wikiinfolist = ko.observable("");
+//    function getDataFromWiki(marker, infoWindow) {
+    var restaurantInfoWindo = this; 
+    restaurantInfoWindo.title = ko.observable(marker.title); 
+    restaurantInfoWindo.lat = ko.observable(marker.lat); 
+    restaurantInfoWindo.lng = ko.observable(marker.lng); 
+    restaurantInfoWindo.wikiinfolist = ko.observable('');
 
-    // var query = marker.title;
-    var dt = 'jsonp',
+    var query = marker.title;
+        var dt = 'jsonp',
         wikiBase = 'https://en.wikipedia.org/w/api.php',
         wikiUrl = wikiBase + '?action=opensearch&search=' + restaurantInfoWindo.title() + '&format=json&callback=wikiCallback';
     var linkInfoHTML = "<ul>info</ul>";
@@ -198,55 +184,45 @@ function getDataFromWiki(marker, myFavPlace) {
         url: wikiUrl,
         dataType: dt,
         success: function (response) {
-            // myFavPlace.wiki = query;
-            var info = response[1];
-
-            if (info.length === 0) {
-                restaurantInfoWindo.wikiinfolist('SORRY!!! No Information');
-            } else {
-                var myList = '';
-                for (var i = 0; i < info.length; i++) {
-                    var url = "http://en.Wikipedia.org/wiki/" + info[i];
-                    var urlInHTML = '<li><a href="' + url + '">' + info[i] + '</a></li>';
-                    //myList = myList.concat(urlInHTML);
-                    myList = myList.concat(urlInHTML);
-                    console.log(' the array ==== >> ' + myList);
-                    if (i === 3) break;
+           // var wikiInfo = (String(response)).split(',');
+            //var name = wikiInfo[0];
+            myFavPlace.wiki = query;
+            console.log('ressppp === ' + response)
+            var info = response[1]; 
+            if (info.length === 0 ){
+                restaurantInfoWindo.wikiinfolist('SORRY!!! No Information'); 
+            }
+            else{
+                var myList= ''; 
+                for(var i =0 ; i< info.length; i++){
+                    var url = "http://en.Wikipedia.org/wiki/" + info[i]; 
+                    var urlInHTML = '<li><a href="' + url + '">' + info[i] + '</a></li'; 
+                    myList = myList.concat(urlInHTML); 
+                    if (i === 2 )break; 
                 }
 
-                linkInfoHTML = linkInfoHTML.replace('info', myList);
-                console.log('linksssss============> ' + linkInfoHTML);
-                restaurantInfoWindo.wikiinfolist(linkInfoHTML);
-                // var listinfo = restaurantInfoWindo.wikiinfolist(linkInfoHTML);
+                linkInfoHTML = linkInfoHTML.replace('info', myList); 
+               var myinfo= restaurantInfoWindo.wikiinfolist(linkInfoHTML); 
+               
+               console.log('the infoooo ===> ' + myinfo);
+
                 //showInfoWindow(marker, myinfo);
-                // console.log(' list info =====>>>>>@ ' + listinfo.length);
             }
+            showInfoWindow(marker, myFavPlace);
         },
         error: function (err) {
             console.log('Error happining ' + err);
             // showInfoWindow() 
             // infoWindow.setContent('<div>' + infoWindow.wiki + '</div>');
-            //alert('Sorry No info ' + err);
-            restaurantInfoWindo.wikiinfolist('Errorr no Idea ');
+            alert('Sorry No info ' + err);
         }
     });
-    restaurantInfoWindo.restInfo = ko.computed(function () {
-        var myHTML = '<div>' + '<h4 class = "place-name">' + restaurantInfoWindo.title() + '</h4>' + '<span>' +
-            '<p> Aabilable restInfo on Wiki: </p>' + restaurantInfoWindo.wikiinfolist() + "</span></div>";
-        
-        return myHTML;
+    restaurantInfoWindo.restInfo = ko.computed(function(){
+        var myHTML = "<div>" + '<h4 class = "place-name">' + restaurantInfoWindo.title() + '</h4>' + "<span>" +
+         '<p> Aabilable restInfo on Wiki: </p>' +    restaurantInfoWindo.wikiinfolist() + "</span></div>";
+
+         return myHTML
     });
 
-    // restList =[]; 
-    // restList.forEach(function(marker, fav){
-    //     restList.push(ko.observable(new getDataFromWiki(marker, fav)));
-    // });
-    showInfoWindow(marker, restaurantInfoWindo);
-    // restaurantInfoWindo.restInfo = ko.observable('<div>' + '<h4 class = "place-name">' + restaurantInfoWindo.title() + '</h4>' + '<span>' +
-    //         '<p> Aabilable restInfo on Wiki: </p>' + restaurantInfoWindo.wikiinfolist() + "</span></div>"
-    //     );
-    // restaurantInfoWindo.showInfoWindow = function(){
-
-    // };
-
+    restaurantInfoWindo
 }

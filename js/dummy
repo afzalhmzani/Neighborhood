@@ -348,3 +348,82 @@ function getDataFromWiki(marker, infoWindow) {
     //         }, 200);
     //         getDataFromWiki(this, infoWindow);
     //     }
+
+
+
+    
+    // $.ajax({
+    //     url: wikiUrl,
+    //     dataType: dt,
+    //     success: function (response) {
+    //        var infos = response[1];
+    //        if (infos.length === 0 ){
+    //            restaurantInfoWindo.wikiinfolist('No info '); 
+    //        } else {
+    //            var restElem = ''; 
+    //            for (var i = 0 ; i < infos.length; i++){
+    //                var url = "https://en.Wikipedia.org/wiki/" + infos[1]; 
+    //                 var listHTMLUrl = '<li><a href="' + url +'">' + infos[i] + '</a></li>'; 
+    //                 restElem = restElem.concat(listHTMLUrl); 
+    //                 if( i === 2) break; 
+    //            }
+    //            linkInfoHTML = linkInfoHTML.replace('info', restElem);
+    //            restaurantInfoWindow.wikiinfolist(linkInfoHTML) 
+    //         }
+
+
+    //         // var wikiInfo = (String(response)).split(',');
+    //         //var name = wikiInfo[0];
+    //         // console.log('resopnse --------- '+ name); 
+    //         //infoWindow.wiki = name; 
+    //         //var linkInfo = response[1]; 
+    //         // if (linkInfo.length === 0 && infoWindow.length === 0 ){
+    //         //     infoWindow = 'No Info'; 
+    //         //     showInfoWindow(marker, infoWindow); 
+    //         // } else {
+    //         //     var listEl = ''; 
+    //         //     for (var i = 0; i < linkInfo.length; i++){
+    //         //         var url = "http://en.Wikipedia.org/wiki/ " + linkInfo[i];
+    //         //         var domHTML = '<li><a href="'+url+'">' + linkInfo[i] + '</a><li>'; 
+    //         //         listEl = listEl.concat(domHTML); 
+    //         //         if (i === 2); break; 
+    //         //     }
+    //         //     linkInfoHTML = linkInfoHTML.replace('info', listEl); 
+    //         //     showInfoWindow(marker, infoWindow);
+    //         // }
+
+    //         //   clearTimeout(wikiRequestTimeout);
+    //     },
+    //     error: function (err) {
+    //         console.log('Error happining ' + err);
+    //         // showInfoWindow() 
+    //         // infoWindow.setContent('<div>' + infoWindow.wiki + '</div>');
+    //         alert('Sorry No info ' + err);
+    //     }
+    // });
+
+
+final one 
+
+var query = marker.title,
+        dt = 'jsonp',
+        wikiBase = 'https://en.wikipedia.org/w/api.php',
+        wikiUrl = wikiBase + '?action=opensearch&search=' + query + '&format=json&callback=wikiCallback';
+    //var linkInfoHTML = "<ul>info</ul>"; 
+    $.ajax({
+        url: wikiUrl,
+        dataType: dt,
+        success: function (response) {
+            var wikiInfo = (String(response)).split(',');
+            var name = wikiInfo[0];
+            infoWindow.wiki = name;
+
+            showInfoWindow(marker, infoWindow);
+        },
+        error: function (err) {
+            console.log('Error happining ' + err);
+            // showInfoWindow() 
+            // infoWindow.setContent('<div>' + infoWindow.wiki + '</div>');
+            alert('Sorry No info ' + err);
+        }
+    });
