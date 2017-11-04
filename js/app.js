@@ -184,16 +184,16 @@ function getDataFromWiki(marker, myFavPlace) {
     //    function getDataFromWiki(marker, infoWindow) {
     var restaurantInfoWindo = this;
     restaurantInfoWindo.title = ko.observable(marker.title);
-    restaurantInfoWindo.lat = ko.observable(marker.lat);
-    restaurantInfoWindo.lng = ko.observable(marker.lng);
-    restaurantInfoWindo.wikiinfolist = ko.observable("");
+   // restaurantInfoWindo.lat = ko.observable(marker.lat);
+    //restaurantInfoWindo.lng = ko.observable(marker.lng);
+    restaurantInfoWindo.wikiinfolist = ko.observable(" ");
 
     // var query = marker.title;
     var dt = 'jsonp',
         wikiBase = 'https://en.wikipedia.org/w/api.php',
         wikiUrl = wikiBase + '?action=opensearch&search=' + restaurantInfoWindo.title() + '&format=json&callback=wikiCallback';
     var linkInfoHTML = "<ul>info</ul>";
-
+    var listInfTest; 
     $.ajax({
         url: wikiUrl,
         dataType: dt,
@@ -207,7 +207,11 @@ function getDataFromWiki(marker, myFavPlace) {
                 var myList = '';
                 for (var i = 0; i < info.length; i++) {
                     var url = "http://en.Wikipedia.org/wiki/" + info[i];
-                    var urlInHTML = '<li><a href="' + url + '">' + info[i] + '</a></li>';
+                    var urlInHTML = '<li>'+
+                                        '<a href="' + url + '">' 
+                                            + info[i] + 
+                                        '</a>'+
+                                    '</li>';
                     //myList = myList.concat(urlInHTML);
                     myList = myList.concat(urlInHTML);
                     console.log(' the array ==== >> ' + myList);
@@ -231,9 +235,15 @@ function getDataFromWiki(marker, myFavPlace) {
         }
     });
     restaurantInfoWindo.restInfo = ko.computed(function () {
-        var myHTML = '<div>' + '<h4 class = "place-name">' + restaurantInfoWindo.title() + '</h4>' + '<span>' +
-            '<p> Aabilable restInfo on Wiki: </p>' + restaurantInfoWindo.wikiinfolist() + "</span></div>";
-        
+        var myHTML = 
+        '<div>' + 
+            '<h4 class = "header-name">' + restaurantInfoWindo.title() + '</h4>' + 
+            '<span>' +
+                '<p> Aabilable restInfo on Wiki: </p>' +
+                restaurantInfoWindo.wikiinfolist() + 
+            '</span>'+
+        '</div>';
+        console.log(' in the htmal ----------------.....\\\\\\>>>>> ' + restaurantInfoWindo.wikiinfolist()); 
         return myHTML;
     });
 
