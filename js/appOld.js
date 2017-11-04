@@ -63,6 +63,7 @@ function initMap() {
     });
     var bounds = new google.maps.LatLngBounds();
 
+    // PLEASE UNCOMMENT marker.addListener() 
     for (var i = 0; i < restaurantsInRiyadh.length; i++) {
         var positionOnMap = restaurantsInRiyadh[i].location;
         var title = restaurantsInRiyadh[i].title;
@@ -83,8 +84,18 @@ function initMap() {
         bounds.extend(markers[i].position);
     }
 
+    // function myCallback() {
+    //     if (this.getAnimation() !== null) {
+    //         this.setAnimation(null);
+    //     } else {
+    //         this.setAnimation(google.maps.Animation.BOUNCE);
+    //         setTimeout(function () {
+    //             marker.setAnimation(null);
+    //         }, 200);
+    //         getDataFromWiki(this, infoWindow);
+    //     }
+    // }
     function myCallback() {
-        getDataFromWiki(this, infoWindow);
         if (this.getAnimation() !== null) {
             this.setAnimation(null);
         } else {
@@ -92,6 +103,7 @@ function initMap() {
             setTimeout(function () {
                 marker.setAnimation(null);
             }, 200);
+            getDataFromWiki(this, infoWindow);
         }
     }
     map.fitBounds(bounds);
@@ -140,6 +152,8 @@ function AppViewModel() {
             // https://en.wikipedia.org/wiki/Don%27t_repeat_yourself
             var restaurantFound = restaurant.title.toLowerCase().indexOf(search) >= 0; // true or false (everything greater than -1 one is true)
 
+
+            // console.log(restaurant.title, search, restaurantFound);
             if (restaurant.hasOwnProperty('marker')) restaurant.marker.setVisible(restaurantFound);
             //if (restaurant.marker) restaurant.marker.setVisible(restaurantFound)
             return restaurantFound;
@@ -148,8 +162,8 @@ function AppViewModel() {
 
     // http://knockoutjs.com/documentation/click-binding.html#note-1-passing-a-current-item-as-a-parameter-to-your-handler-function
     this.TheClickedMarker = function (restaurant) {
-
-               for (var i = 0; i < appViewModel.places().length; ++i) {
+        //setAllMarkersVis(); 
+        for (var i = 0; i < appViewModel.places().length; ++i) {
             appViewModel.places()[i].marker.setVisible(true);
         }
 
@@ -167,51 +181,83 @@ var loadingMapError = function () {
 };
 
 function getDataFromWiki(marker, myFavPlace) {
+    //    function getDataFromWiki(marker, infoWindow) {
+    var restaurantInfoWindo = this;
+    restaurantInfoWindo.title = ko.observable(marker.title);
+   // restaurantInfoWindo.lat = ko.observable(marker.lat);
+    //restaurantInfoWindo.lng = ko.observable(marker.lng);
+    restaurantInfoWindo.wikiinfolist = ko.observable(" ");
+
+    // var query = marker.title;
     var dt = 'jsonp',
         wikiBase = 'https://en.wikipedia.org/w/api.php',
-        wikiUrl = wikiBase + '?action=opensearch&search=' + marker.title + '&format=json&callback=wikiCallback';
+        wikiUrl = wikiBase + '?action=opensearch&search=' + restaurantInfoWindo.title() + '&format=json&callback=wikiCallback';
     var linkInfoHTML = "<ul>info</ul>";
-    var listInfTest;
+    var listInfTest; 
     $.ajax({
         url: wikiUrl,
         dataType: dt,
         success: function (response) {
+            // myFavPlace.wiki = query;
             var info = response[1];
+
             if (info.length === 0) {
-                appViewModel.wikiinfolist('SORRY!!! No Information');
+                restaurantInfoWindo.wikiinfolist('SORRY!!! No Information');
             } else {
                 var myList = '';
                 for (var i = 0; i < info.length; i++) {
                     var url = "http://en.Wikipedia.org/wiki/" + info[i];
-                    var urlInHTML = '<li>' +
-                        '<a href="' + url + '">' +
-                        info[i] +
-                        '</a>' +
-                        '</li>';
+                    var urlInHTML = '<li>'+
+                                        '<a href="' + url + '">' 
+                                            + info[i] + 
+                                        '</a>'+
+                                    '</li>';
+                    //myList = myList.concat(urlInHTML);
                     myList = myList.concat(urlInHTML);
+                    console.log(' the array ==== >> ' + myList);
                     if (i === 3) break;
                 }
 
                 linkInfoHTML = linkInfoHTML.replace('info', myList);
-                marker.wikiinfolist = linkInfoHTML;
-
-
-                var myHTML =
-                    '<div>' +
-                    '<h4 class = "header-name">' + marker.title + '</h4>' +
-                    '<span>' +
-                    '<p> Aabilable restInfo on Wiki: </p>' +
-                    marker.wikiinfolist +
-                    '</span>' +
-                    '</div>';
-                infoWindow.setContent(myHTML);
-                infoWindow.open(map, marker);
+                //console.log('linksssss============> ' + linkInfoHTML);
+                restaurantInfoWindo.wikiinfolist(linkInfoHTML);
+                // var listinfo = restaurantInfoWindo.wikiinfolist(linkInfoHTML);
+                //showInfoWindow(marker, myinfo);
+                // console.log(' list info =====>>>>>@ ' + listinfo.length);
             }
         },
         error: function (err) {
             console.log('Error happining ' + err);
+            // showInfoWindow() 
+            // infoWindow.setContent('<div>' + infoWindow.wiki + '</div>');
+            //alert('Sorry No info ' + err);
             restaurantInfoWindo.wikiinfolist('Errorr no Idea ');
         }
     });
+    restaurantInfoWindo.restInfo = ko.computed(function () {
+        var myHTML = 
+        '<div>' + 
+            '<h4 class = "header-name">' + restaurantInfoWindo.title() + '</h4>' + 
+            '<span>' +
+                '<p> Aabilable restInfo on Wiki: </p>' +
+                restaurantInfoWindo.wikiinfolist() + 
+            '</span>'+
+        '</div>';
+        console.log(' in the htmal ----------------.....\\\\\\>>>>> ' + restaurantInfoWindo.wikiinfolist()); 
+        return myHTML;
+    });
+
+    // restList =[]; 
+    // restList.forEach(function(marker, fav){
+    //     restList.push(ko.observable(new getDataFromWiki(marker, fav)));
+    // });
+    console.log(" final info |||||||||||||||||| ==>> " + restaurantInfoWindo)
+    showInfoWindow(marker, restaurantInfoWindo);
+    // restaurantInfoWindo.restInfo = ko.observable('<div>' + '<h4 class = "place-name">' + restaurantInfoWindo.title() + '</h4>' + '<span>' +
+    //         '<p> Aabilable restInfo on Wiki: </p>' + restaurantInfoWindo.wikiinfolist() + "</span></div>"
+    //     );
+    // restaurantInfoWindo.showInfoWindow = function(){
+
+    // };
 
 }
