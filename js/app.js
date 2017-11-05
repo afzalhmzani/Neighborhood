@@ -84,15 +84,23 @@ function initMap() {
     }
 
     function myCallback() {
-        getDataFromWiki(this, infoWindow);
-        if (this.getAnimation() !== null) {
-            this.setAnimation(null);
-        } else {
-            this.setAnimation(google.maps.Animation.BOUNCE);
-            setTimeout(function () {
-                marker.setAnimation(null);
-            }, 200);
-        }
+        
+        setTimeout(function () {
+            this.setAnimation(google.maps.Animation.BOUNCE);  
+           // this.setAnimation(null); 
+            getDataFromWiki(this, infoWindow);
+        }.bind(this), 200);
+        
+        // if (this.getAnimation() !== null) {
+        //     this.setAnimation(null);
+        // } else {
+        //     this.setAnimation(google.maps.Animation.BOUNCE);
+        //     setTimeout(function () {
+        //         marker.setAnimation(null);
+        //     }.bind(this), 200);
+        //     getDataFromWiki(this, infoWindow);
+        // }
+        
     }
     map.fitBounds(bounds);
 }
@@ -210,7 +218,8 @@ function getDataFromWiki(marker, myFavPlace) {
         },
         error: function (err) {
             console.log('Error happining ' + err);
-            restaurantInfoWindo.wikiinfolist('Errorr no Idea ');
+             alert('Sorry No info ' + err);
+            // restaurantInfoWindo.wikiinfolist('Errorr no Idea ');
         }
     });
 
