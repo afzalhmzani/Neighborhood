@@ -85,11 +85,13 @@ function initMap() {
 
     function myCallback() {
         
+        this.setAnimation(google.maps.Animation.BOUNCE);
+        
         setTimeout(function () {
-            this.setAnimation(google.maps.Animation.BOUNCE);  
-           // this.setAnimation(null); 
-            getDataFromWiki(this, infoWindow);
-        }.bind(this), 200);
+           this.setAnimation(null);
+           getDataFromWiki(this, infoWindow); 
+        }.bind(this), 1000);
+       
         
         // if (this.getAnimation() !== null) {
         //     this.setAnimation(null);
